@@ -38,13 +38,13 @@ fuel-efficiency-predictor/
 
 ---
 
+## Screenshots
+
+![Home Page](screenshot1.png)
+![Result Page](screenshot2.png)
+
 ## Run Locally
 
 ```bash
 pip install -r requirements.txt
 python app.py
-
-## Screenshots
-
-![Home Page](screenshot1.png)
-![Result Page](screenshot2.png)
