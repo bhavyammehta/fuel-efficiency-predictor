@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result - Fuel Efficiency Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+        .display-4 {
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                🚗 Fuel Efficiency Predictor
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="card-title mb-0">Prediction Result</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="alert alert-{{ color }}">
+                            <h4>Predicted Fuel Efficiency</h4>
+                            <h1 class="display-4">{{ prediction }} MPG</h1>
+                            <h5 class="mt-3">Efficiency Category: <strong>{{ category }}</strong></h5>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5>Vehicle Specifications:</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">Engine Size: {{ features.engine_size }}L</li>
+                                    <li class="list-group-item">Cylinders: {{ features.cylinders }}</li>
+                                    <li class="list-group-item">Horsepower: {{ features.horsepower }} HP</li>
+                                    <li class="list-group-item">Weight: {{ features.weight }} lbs</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>&nbsp;</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">Acceleration: {{ features.acceleration }}s (0-60 mph)</li>
+                                    <li class="list-group-item">Model Year: 19{{ features.model_year }}</li>
+                                    <li class="list-group-item">
+                                        Origin: 
+                                        {% if features.origin == '1' %}USA
+                                        {% elif features.origin == '2' %}Europe
+                                        {% else %}Japan
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-primary">Make Another Prediction</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light text-center text-muted py-4 mt-5">
+        <div class="container">
+            <p>&copy; 2024 Fuel Efficiency Predictor. Demo Application.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

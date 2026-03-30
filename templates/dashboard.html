@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header animate-fade-in">
+            <h1><i class="fas fa-chart-bar me-3"></i>Model Dashboard</h1>
+            <p>Comprehensive analytics and performance metrics</p>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="metric-card animate-slide-in-left">
+                    <div class="metric-icon rmse">
+                        <i class="fas fa-crosshairs"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>{{ "%.2f"|format(metrics.rmse) }}</h3>
+                        <p>Root Mean Squared Error</p>
+                        <small>Lower is better</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="metric-card animate-slide-in-up">
+                    <div class="metric-icon r2">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>{{ "%.2f"|format(metrics.r2) }}</h3>
+                        <p>R² Score</p>
+                        <small>Higher is better</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="metric-card animate-slide-in-right">
+                    <div class="metric-icon mae">
+                        <i class="fas fa-ruler"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>{{ "%.2f"|format(metrics.mae) }}</h3>
+                        <p>Mean Absolute Error</p>
+                        <small>Lower is better</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-lg-8">
+                <div class="chart-card animate-slide-in-left">
+                    <h4><i class="fas fa-chart-line me-2"></i>Feature Importance Analysis</h4>
+                    <canvas id="featureImportanceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card animate-slide-in-right">
+                    <h4><i class="fas fa-info-circle me-2"></i>Model Information</h4>
+                    <div class="model-info">
+                        <div class="info-item">
+                            <strong>Algorithm:</strong>
+                            <span>Random Forest Regressor</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Estimators:</strong>
+                            <span>200 trees</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Training Data:</strong>
+                            <span>398 vehicles</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Features:</strong>
+                            <span>7 parameters</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Last Updated:</strong>
+                            <span id="currentDate"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Insights -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="insights-card animate-fade-in">
+                    <h4><i class="fas fa-lightbulb me-2"></i>Key Insights</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="insight-item">
+                                <i class="fas fa-weight-hanging text-primary"></i>
+                                <div>
+                                    <h6>Weight is Crucial</h6>
+                                    <p>Vehicle weight has the highest impact on fuel efficiency</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="insight-item">
+                                <i class="fas fa-horse text-success"></i>
+                                <div>
+                                    <h6>Horsepower Matters</h6>
+                                    <p>Engine power significantly affects MPG predictions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="insight-item">
+                                <i class="fas fa-cogs text-warning"></i>
+                                <div>
+                                    <h6>Displacement Impact</h6>
+                                    <p>Engine size plays a key role in efficiency</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="insight-item">
+                                <i class="fas fa-globe text-info"></i>
+                                <div>
+                                    <h6>Regional Differences</h6>
+                                    <p>Vehicle origin influences design and efficiency</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+    
+    // Feature Importance Chart
+    const featureCtx = document.getElementById('featureImportanceChart').getContext('2d');
+    const featureData = {
+        labels: [{% for feature, importance in feature_importance.items() %}'{{ feature.title() }}',{% endfor %}],
+        datasets: [{
+            label: 'Importance',
+            data: [{% for feature, importance in feature_importance.items() %}{{ importance * 100 }},{% endfor %}],
+            backgroundColor: [
+                '#4CAF50', '#2196F3', '#FF9800', '#F44336',
+                '#9C27B0', '#00BCD4', '#8BC34A'
+            ],
+            borderWidth: 0
+        }]
+    };
+    
+    new Chart(featureCtx, {
+        type: 'bar',
+        data: featureData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Importance: ${context.parsed.y.toFixed(1)}%`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Importance (%)'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
