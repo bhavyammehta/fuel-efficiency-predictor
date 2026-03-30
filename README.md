@@ -39,10 +39,10 @@ fuel-efficiency-predictor/
 ---
 
 ## Screenshots
+## 📸 Screenshots
 
-![Home Page](screenshot1.png)
-![Result Page](screenshot2.png)
-
+![Home Page](Home Page.png)
+![Result Page](Result page.png)
 ## Run Locally
 
 ```bash
